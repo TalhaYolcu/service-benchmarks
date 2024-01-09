@@ -1,0 +1,4 @@
+/home/talha/Desktop/ELCI-2/zeromq/build/CMakeFiles/server.dir
+/home/talha/Desktop/ELCI-2/zeromq/build/CMakeFiles/client.dir
+/home/talha/Desktop/ELCI-2/zeromq/build/CMakeFiles/edit_cache.dir
+/home/talha/Desktop/ELCI-2/zeromq/build/CMakeFiles/rebuild_cache.dir
