@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <zmq.hpp>
 #include <string>
+#include <ctime>
+#include <sys/time.h>
 
 #define SHM_SIZE 1024
 
@@ -19,6 +21,13 @@ int main() {
 
     zmq::message_t request (6);
     memcpy (request.data (), "KEYGEN", 6);
+    
+    
+    // Get start time
+    struct timeval start, end;
+    gettimeofday(&start, NULL);
+
+
     socket.send (request, zmq::send_flags::none);
 
     //  Get the reply.
@@ -40,20 +49,24 @@ int main() {
     std::cout << "Client: Sending message to server..." << std::endl;
     strcpy(shared_memory, "Hello from client");
 
-    while (true) {
-        while (strcmp(shared_memory, "world from server") != 0) {
-            // Wait for server's response
-            usleep(1000);
-        }
-
-        std::cout << "Client: Received message from server: " << shared_memory << std::endl;
-
-        zmq::message_t endReq(6);
-        memcpy (endReq.data (), "endReq", 6);
-        socket.send (request, zmq::send_flags::none);
-        break;
-
+    while (strcmp(shared_memory, "world from server") != 0) {
+        // Wait for server's response
+        usleep(1000);
     }
+
+    std::cout << "Client: Received message from server: " << shared_memory << std::endl;
+
+    zmq::message_t endReq(6);
+    memcpy (endReq.data (), "endReq", 6);
+    socket.send (request, zmq::send_flags::none);
+
+    // Get end time
+    gettimeofday(&end, NULL);
+    long seconds = end.tv_sec - start.tv_sec;
+    long microseconds = end.tv_usec - start.tv_usec;
+    double elapsed = seconds + microseconds * 1e-6;
+    std::cout << "Time taken by client: " << elapsed << " seconds" << std::endl;
+
 
     shmdt(shared_memory); // Detach the shared memory segment
     shmctl(shmid, IPC_RMID, NULL); // Remove the shared memory segment
