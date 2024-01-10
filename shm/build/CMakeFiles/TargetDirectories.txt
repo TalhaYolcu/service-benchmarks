@@ -1,4 +1,0 @@
-/home/talha/Desktop/ELCI-2/shm/build/CMakeFiles/server.dir
-/home/talha/Desktop/ELCI-2/shm/build/CMakeFiles/client.dir
-/home/talha/Desktop/ELCI-2/shm/build/CMakeFiles/edit_cache.dir
-/home/talha/Desktop/ELCI-2/shm/build/CMakeFiles/rebuild_cache.dir

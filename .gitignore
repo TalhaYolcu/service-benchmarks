@@ -1,4 +1,7 @@
-shm/build/
 rpc/build/
+
+shm/build/
+
+zeromq/build/
 
 .vscode
