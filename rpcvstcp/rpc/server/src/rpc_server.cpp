@@ -20,47 +20,47 @@ class AddressBookService final : public expcmake::AddressBook::Service {
             std::cout << "Server: GetAddress for \"" << request->name() << "\"." << std::endl;
             response->set_name(request->name());
             
-            const char* randomStr1 = generateRandomString(message_size/5);
-            const char* randomStr2 = generateRandomString(message_size/5);
-            const char* randomStr3 = generateRandomString(message_size/5);
-            const char* randomStr4 = generateRandomString(message_size/5);
+            std::string randomStr1 = generateRandomString(message_size/5);
+            std::string randomStr2 = generateRandomString(message_size/5);
+            std::string randomStr3 = generateRandomString(message_size/5);
+            std::string randomStr4 = generateRandomString(message_size/5);
 
             
-            response->set_city(randomStr1);
-            response->set_zip(randomStr2);
-            response->set_street(randomStr3);
-            response->set_country(randomStr4);
-
-            delete[] randomStr1;
-            delete[] randomStr2;
-            delete[] randomStr3;
-            delete[] randomStr4;                        
+            response->set_city(randomStr1.c_str());
+            response->set_zip(randomStr2.c_str());
+            response->set_street(randomStr3.c_str());
+            response->set_country(randomStr4.c_str());
 
 
             return grpc::Status::OK;
         }
-        const char* generateRandomString(int length) {
-            static const char charset[] =
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        std::string generateRandomString(int length) {
 
-            char* randomString = new char[length + 1]; // +1 for null terminator
-            int charsetSize = sizeof(charset) - 1;
 
-            // Seed for random number generation
-            std::srand(static_cast<unsigned int>(std::time(nullptr)));
+            // Define the characters to be used in the random string
+            const std::string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+            // Initialize an empty string to store the result
+            std::string randomString;
+
+            // Generate the random string
             for (int i = 0; i < length; ++i) {
-                randomString[i] = charset[std::rand() % charsetSize];
+                // Generate a random index within the range of the characters string
+                int randomIndex = std::rand() % characters.size();
+
+                // Append the randomly chosen character to the result string
+                randomString.push_back(characters[randomIndex]);
             }
 
-            randomString[length] = '\0'; // Null-terminate the string
-
+            // Return the generated random string
             return randomString;
         }
 };
 
 int main(int argc, char const *argv[])
 {
+                // Seed the random number generator with the current time
+            std::srand(static_cast<unsigned int>(std::time(nullptr)));
     std::cout<<"This is rpc_server"<<std::endl;
 
    // Check if the correct number of arguments is provided

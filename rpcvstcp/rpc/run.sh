@@ -10,9 +10,8 @@ client_executable="rpc_client"
 
 # Run the server
 echo "Starting server..."
-cd "$server_dir" || exit 1
+cd "$server_dir"
 ./"$server_executable" -c 1000000 -s 4096 &
-server_pid=$!
 cd ..
 
 # Wait for a short duration to ensure the server has started
@@ -20,8 +19,9 @@ sleep 2
 
 # Run the client
 echo "Starting client..."
-cd "$client_dir" || exit 1
-./"$client_executable" -c 1000000 -s 4096
+cd "$client_dir"
+./"$client_executable" -c 1000000 -s 4096 &
 cd ..
 
 echo "Server and client started successfully."
+wait

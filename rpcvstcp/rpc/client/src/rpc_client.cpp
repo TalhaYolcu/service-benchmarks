@@ -13,29 +13,34 @@
 #define NUMBER_OF_PROPERTY = 5
 
 
-const char* generateRandomString(int length) {
-    static const char charset[] =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+std::string generateRandomString(int length) {
 
-    char* randomString = new char[length + 1]; // +1 for null terminator
-    int charsetSize = sizeof(charset) - 1;
 
-    // Seed for random number generation
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    // Define the characters to be used in the random string
+    const std::string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+    // Initialize an empty string to store the result
+    std::string randomString;
+
+    // Generate the random string
     for (int i = 0; i < length; ++i) {
-        randomString[i] = charset[std::rand() % charsetSize];
+        // Generate a random index within the range of the characters string
+        int randomIndex = std::rand() % characters.size();
+
+        // Append the randomly chosen character to the result string
+        randomString.push_back(characters[randomIndex]);
     }
 
-    randomString[length] = '\0'; // Null-terminate the string
-
+    std::cout<<"string generated"<<std::endl;
+    // Return the generated random string
     return randomString;
 }
 
 int main(int argc, char const *argv[])
 {
     std::cout<<"This is rpc client"<<std::endl;
-
+    // Seed the random number generator with the current time
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
     int iterations= 0;
     int message_size =  0;
     // Check if the correct number of arguments is provided
@@ -68,29 +73,27 @@ int main(int argc, char const *argv[])
     auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
     std::unique_ptr<expcmake::AddressBook::Stub> stub = expcmake::AddressBook::NewStub(channel);
     grpc::ClientContext context;
-
-    for(int i =0;i<iterations;i++) {
         // Setup request
         expcmake::NameQuerry query;
         expcmake::Address result;
+    for(int i =0;i<iterations;i++) {
 
 
-        const char* randomStr = generateRandomString(message_size/5);
 
-        query.set_name(randomStr);
+        std::string randomStr = generateRandomString(message_size/5);
+        std::cout<<"Generated str : "<<randomStr<<std::endl;
+        query.set_name(randomStr.c_str());
 
-        // Remember to delete the allocated memory
-        delete[] randomStr;
-
+        std::cout<<"Address set"<<std::endl;
         grpc::Status status = stub->GetAddress(&context, query, &result);
 
         // Output result
         std::cout << "I got:" << std::endl;
-        std::cout << "Name: " << result.name() << std::endl;
-        std::cout << "City: " << result.city() << std::endl;
-        std::cout << "Zip:  " << result.zip() << std::endl;
-        std::cout << "Street: " << result.street() << std::endl;
-        std::cout << "Country: " << result.country() << std::endl;
+        //std::cout << "Name: " << result.name() << std::endl;
+        //std::cout << "City: " << result.city() << std::endl;
+        //std::cout << "Zip:  " << result.zip() << std::endl;
+        //std::cout << "Street: " << result.street() << std::endl;
+        //std::cout << "Country: " << result.country() << std::endl;
 
     }
 
