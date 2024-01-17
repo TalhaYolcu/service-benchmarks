@@ -14,8 +14,6 @@
 
 
 std::string generateRandomString(int length) {
-
-
     // Define the characters to be used in the random string
     const std::string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -31,7 +29,6 @@ std::string generateRandomString(int length) {
         randomString.push_back(characters[randomIndex]);
     }
 
-    std::cout<<"string generated"<<std::endl;
     // Return the generated random string
     return randomString;
 }
@@ -72,23 +69,18 @@ int main(int argc, char const *argv[])
     // Call
     auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
     std::unique_ptr<expcmake::AddressBook::Stub> stub = expcmake::AddressBook::NewStub(channel);
-    grpc::ClientContext context;
-        // Setup request
-        expcmake::NameQuerry query;
-        expcmake::Address result;
+    
+    // Setup request
+    expcmake::NameQuerry query;
+    expcmake::Address result;
+
     for(int i =0;i<iterations;i++) {
-
-
-
         std::string randomStr = generateRandomString(message_size/5);
-        std::cout<<"Generated str : "<<randomStr<<std::endl;
         query.set_name(randomStr.c_str());
+        grpc::ClientContext context;
 
-        std::cout<<"Address set"<<std::endl;
         grpc::Status status = stub->GetAddress(&context, query, &result);
-
         // Output result
-        std::cout << "I got:" << std::endl;
         //std::cout << "Name: " << result.name() << std::endl;
         //std::cout << "City: " << result.city() << std::endl;
         //std::cout << "Zip:  " << result.zip() << std::endl;

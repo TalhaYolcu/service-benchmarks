@@ -4,6 +4,7 @@ shm/build/
 
 zeromq/build/
 
-rpcvstcp/rpc/build/
+rpcvsasio/rpc/build/
+rpcvsasio/asio/build/
 
 .vscode
