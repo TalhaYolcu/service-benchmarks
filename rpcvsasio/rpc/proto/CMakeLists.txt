@@ -6,8 +6,8 @@ find_package(Threads)
 # Protobuf/Grpc source files
 #
 set(PROTO_FILES
-    myproto/address.proto
-    myproto/addressbook.proto
+    myproto/query.proto
+    myproto/response.proto
 )
 
 #

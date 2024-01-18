@@ -8,10 +8,9 @@
 #include <ctime>
 #include <array>
 #include <boost/array.hpp>
+
+
 using asio::ip::tcp;
-
-#define NUMBER_OF_PROPERTY = 5
-
 int main(int argc, char* argv[])
 {
   try
@@ -59,10 +58,13 @@ int main(int argc, char* argv[])
 
     for (int i =0;i<iterations;i++)
     {
-      boost::array<char, 128> buf;
+
+      asio::write(socket,asio::buffer("World"));
       asio::error_code error;
 
-      size_t len = socket.read_some(asio::buffer(buf), error);
+      std::array<char, 1024> response;
+      std::size_t length = socket.read_some(asio::buffer(response),error);
+      //std::cout << "Response: " << std::string(response.data(), length) << std::endl;
 
       if (error == asio::error::eof) {
         std::cout<<"Error happened"<<std::endl;
@@ -74,8 +76,6 @@ int main(int argc, char* argv[])
         throw asio::system_error(error); // Some other error.
 
       }
-
-      std::cout.write(buf.data(), len);
     }
 
         // Get end time
@@ -84,8 +84,6 @@ int main(int argc, char* argv[])
     long microseconds = end.tv_usec - start.tv_usec;
     double elapsed = seconds + microseconds * 1e-6;
     std::cout << "Time taken by client: " << elapsed << " seconds" << std::endl;
-
-
   }
 
   catch (std::exception& e)

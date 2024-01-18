@@ -1,5 +1,5 @@
-#include <myproto/address.pb.h>
-#include <myproto/addressbook.grpc.pb.h>
+#include <myproto/response.pb.h>
+#include <myproto/query.grpc.pb.h>
 
 #include <grpc/grpc.h>
 #include <grpcpp/server_builder.h>
@@ -10,7 +10,6 @@
 #include <cstdlib>
 
 
-#define NUMBER_OF_PROPERTY = 5
 int message_size = 0;
 int iterations = 0;
 bool exit_signal = false;
@@ -25,48 +24,37 @@ void signalHandler(int signum) {
 
 }
 
-class AddressBookService final : public expcmake::AddressBook::Service {
+class GetHelloService final : public expcmake::GetHello::Service {
     public:
-        virtual ::grpc::Status GetAddress(::grpc::ServerContext* context, const ::expcmake::NameQuerry* request, ::expcmake::Address* response)
-        {
-            //std::cout << "Server: GetAddress for \"" << request->name() << "\"." << std::endl;
-            response->set_name(request->name());
-            
-            std::string randomStr1 = generateRandomString(message_size/5);
-            std::string randomStr2 = generateRandomString(message_size/5);
-            std::string randomStr3 = generateRandomString(message_size/5);
-            std::string randomStr4 = generateRandomString(message_size/5); 
-            response->set_city(randomStr1.c_str());
-            response->set_zip(randomStr2.c_str());
-            response->set_street(randomStr3.c_str());
-            response->set_country(randomStr4.c_str());
+        virtual ::grpc::Status GetHelloWorld(::grpc::ServerContext* context, const ::expcmake::query* request, ::expcmake::Response* response)
+        {        
+            std::string generated = generateHelloWorldString(message_size);
+            //std::cout<<"Generated : "<<generated<<std::endl;
+            response->set_message(generated);
             return grpc::Status::OK;
         }
-        std::string generateRandomString(int length) {
-            // Define the characters to be used in the random string
-            const std::string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        std::string generateHelloWorldString(int length) {
+            const std::string helloWorld = "HelloWorld";
+            std::string result;
 
-            // Initialize an empty string to store the result
-            std::string randomString;
-
-            // Generate the random string
-            for (int i = 0; i < length; ++i) {
-                // Generate a random index within the range of the characters string
-                int randomIndex = std::rand() % characters.size();
-
-                // Append the randomly chosen character to the result string
-                randomString.push_back(characters[randomIndex]);
+            if (length <= 0) {
+                std::cerr << "Error: Length should be greater than zero." << std::endl;
+                return result;
             }
 
-            // Return the generated random string
-            return randomString;
+            while (result.length() < length) {
+                result += helloWorld;
+            }
+
+            // Trim the string to the required length
+            result.resize(length);
+
+            return result;
         }
 };
 
 int main(int argc, char const *argv[])
 {
-    // Seed the random number generator with the current time
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));
     std::cout<<"This is rpc_server"<<std::endl;
 
     // Register signal handler for Ctrl+C
@@ -97,7 +85,7 @@ int main(int argc, char const *argv[])
     grpc::ServerBuilder builder;
     builder.AddListeningPort("0.0.0.0:50051", grpc::InsecureServerCredentials());
 
-    AddressBookService my_service;
+    GetHelloService my_service;
     builder.RegisterService(&my_service);
 
     std::unique_ptr<grpc::Server> server(builder.BuildAndStart());

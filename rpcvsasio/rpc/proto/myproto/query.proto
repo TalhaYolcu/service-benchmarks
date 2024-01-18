@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package expcmake;
+
+import "myproto/response.proto";
+
+message query {
+    string name = 1;
+}
+
+service GetHello {
+    rpc GetHelloWorld(query) returns (Response) {}
+}

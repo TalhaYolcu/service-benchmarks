@@ -1,5 +1,5 @@
-#include <myproto/address.pb.h>
-#include <myproto/addressbook.grpc.pb.h>
+#include <myproto/response.pb.h>
+#include <myproto/query.grpc.pb.h>
 
 #include <grpc/grpc.h>
 #include <grpcpp/create_channel.h>
@@ -10,34 +10,9 @@
 #include <cstring>
 
 
-#define NUMBER_OF_PROPERTY = 5
-
-
-std::string generateRandomString(int length) {
-    // Define the characters to be used in the random string
-    const std::string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    // Initialize an empty string to store the result
-    std::string randomString;
-
-    // Generate the random string
-    for (int i = 0; i < length; ++i) {
-        // Generate a random index within the range of the characters string
-        int randomIndex = std::rand() % characters.size();
-
-        // Append the randomly chosen character to the result string
-        randomString.push_back(characters[randomIndex]);
-    }
-
-    // Return the generated random string
-    return randomString;
-}
-
 int main(int argc, char const *argv[])
 {
     std::cout<<"This is rpc client"<<std::endl;
-    // Seed the random number generator with the current time
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));
     int iterations= 0;
     int message_size =  0;
     // Check if the correct number of arguments is provided
@@ -68,24 +43,20 @@ int main(int argc, char const *argv[])
 
     // Call
     auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
-    std::unique_ptr<expcmake::AddressBook::Stub> stub = expcmake::AddressBook::NewStub(channel);
+    std::unique_ptr<expcmake::GetHello::Stub> stub = expcmake::GetHello::NewStub(channel);
     
     // Setup request
-    expcmake::NameQuerry query;
-    expcmake::Address result;
+    expcmake::query query;
+    expcmake::Response result;
 
     for(int i =0;i<iterations;i++) {
-        std::string randomStr = generateRandomString(message_size/5);
-        query.set_name(randomStr.c_str());
+        query.set_name("World");
         grpc::ClientContext context;
 
-        grpc::Status status = stub->GetAddress(&context, query, &result);
+        grpc::Status status = stub->GetHelloWorld(&context, query, &result);
         // Output result
-        //std::cout << "Name: " << result.name() << std::endl;
-        //std::cout << "City: " << result.city() << std::endl;
-        //std::cout << "Zip:  " << result.zip() << std::endl;
-        //std::cout << "Street: " << result.street() << std::endl;
-        //std::cout << "Country: " << result.country() << std::endl;
+        //std::cout << "Message: " << result.message() << std::endl;
+
 
     }
 
