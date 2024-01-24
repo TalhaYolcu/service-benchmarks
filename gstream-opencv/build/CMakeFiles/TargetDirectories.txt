@@ -1,4 +1,0 @@
-/home/talha/reachablecode/cudp/build/CMakeFiles/cUDPsender.dir
-/home/talha/reachablecode/cudp/build/CMakeFiles/cUDPreceiver.dir
-/home/talha/reachablecode/cudp/build/CMakeFiles/edit_cache.dir
-/home/talha/reachablecode/cudp/build/CMakeFiles/rebuild_cache.dir
