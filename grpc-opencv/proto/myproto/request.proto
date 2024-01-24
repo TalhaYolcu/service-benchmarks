@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package expcmake;
+
+import "myproto/frame.proto";
+
+message Request {
+    string name = 1;
+}
+
+service gRPCOpenCV {
+    rpc GetFrame(Request) returns (Frame) {}
+}

@@ -1,6 +1,9 @@
-#include <zmq.hpp>
-#include <opencv2/opencv.hpp>
 #include <iostream>
+#include <myproto/request.grpc.pb.h>
+#include <myproto/frame.pb.h>
+#include <grpc/grpc.h>
+#include <grpcpp/create_channel.h>
+#include <opencv2/opencv.hpp>
 #include <chrono>
 #include <csignal>
 
@@ -10,32 +13,29 @@ bool sigIntReceived = false;
 void sigIntHandler(int signum) {
     sigIntReceived = true;
 }
-
-int main() {
+int main(int argc, char const *argv[])
+{
     std::signal(SIGINT, sigIntHandler);
 
+    //std::cout<<"Hello from video_client\n";
+    // Setup request
+    expcmake::Request query;
+    expcmake::Frame result;
+    query.set_name("John");
 
-    // Prepare context and socket
-    zmq::context_t context (1);
-    zmq::socket_t socket (context, zmq::socket_type::req);
-    socket.connect ("tcp://localhost:5555");
+    auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
+    std::unique_ptr<expcmake::gRPCOpenCV::Stub> stub = expcmake::gRPCOpenCV::NewStub(channel);
 
     // Variables for measuring time
     auto start_time = std::chrono::high_resolution_clock::now();
     int frame_count = 0;
 
-    while (true) {
-        // Send a request to the server
-        zmq::message_t request(1);
-        memcpy(request.data(), "0", 1);
-        socket.send(request);
+    while(true) {
+        grpc::ClientContext context;
+        grpc::Status status = stub->GetFrame(&context, query, &result);
 
-        // Receive the frame from the server
-        zmq::message_t reply;
-        socket.recv(&reply);
+        std::string frameData = result.name();
 
-        // Convert the received data back to OpenCV Mat
-        std::string frameData = std::string(static_cast<char*>(reply.data()), reply.size());
         std::vector<uchar> buffer(frameData.begin(), frameData.end());
         cv::Mat frame = cv::imdecode(buffer, cv::IMREAD_COLOR);
 
@@ -58,11 +58,12 @@ int main() {
             start_time = std::chrono::high_resolution_clock::now();
         }
 
+
         // Check for the 'ESC' key to exit the loop
         if (cv::waitKey(1) == 27 || sigIntReceived) {
-            std::cout<<"Exiting from client...\n";
+            std::cout<<"Exitiing from client...\n";
             break;
-        }
+        }        
     }
     return 0;
 }

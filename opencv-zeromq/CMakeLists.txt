@@ -18,3 +18,11 @@ target_link_libraries(video_server ${ZEROMQ_LIBRARIES} ${OpenCV_LIBRARIES})
 # Compile client executable
 add_executable(video_client video_client.cpp)
 target_link_libraries(video_client ${ZEROMQ_LIBRARIES} ${OpenCV_LIBRARIES})
+
+# Compile server executable
+add_executable(async_video_server async_video_server.cpp)
+target_link_libraries(async_video_server ${ZEROMQ_LIBRARIES} ${OpenCV_LIBRARIES})
+
+# Compile client executable
+add_executable(async_video_client async_video_client.cpp)
+target_link_libraries(async_video_client ${ZEROMQ_LIBRARIES} ${OpenCV_LIBRARIES})
