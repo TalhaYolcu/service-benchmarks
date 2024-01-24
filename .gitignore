@@ -6,5 +6,7 @@ zeromq/build/
 
 rpcvsasio/rpc/build/
 rpcvsasio/asio/build/
+opencv-zeromq/build/
+gstream-opencv/build/
 
 .vscode
