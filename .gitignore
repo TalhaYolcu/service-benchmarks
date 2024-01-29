@@ -9,4 +9,5 @@ rpcvsasio/asio/build/
 opencv-zeromq/build/
 gstream-opencv/build/
 grpc-opencv/build/
+grpc-bidirectional/build/
 .vscode
