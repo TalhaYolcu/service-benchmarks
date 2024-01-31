@@ -10,4 +10,5 @@ opencv-zeromq/build/
 gstream-opencv/build/
 grpc-opencv/build/
 grpc-bidirectional/build/
+zeromq-pub-sub/build
 .vscode

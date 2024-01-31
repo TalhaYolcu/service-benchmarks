@@ -13,12 +13,10 @@ void sigIntHandler(int signum) {
 
 int main() {
     std::signal(SIGINT, sigIntHandler);
-
-
     // Prepare context and socket
     zmq::context_t context (1);
     zmq::socket_t socket (context, zmq::socket_type::req);
-    socket.connect ("tcp://localhost:5555");
+    socket.connect ("ipc://localhost:5555");
 
     // Variables for measuring time
     auto start_time = std::chrono::high_resolution_clock::now();
